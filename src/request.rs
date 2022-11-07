@@ -154,22 +154,20 @@ mod tests {
         );
     }
 
-    #[tokio::test]
-    async fn make_get_request_with_body() {
-        let req = Request {
-            body: Some("RAWR!! x3 nuzzles! pounces on u uwu u so warm.".to_string()),
-            url: String::from("https://postman-echo.com/get"),
-            method: RequestMethod::GET,
-            headers: HashMap::new(),
-            params: HashMap::new(),
-        };
+    // #[tokio::test]
+    // async fn make_get_request_with_body() {
+    //     let req = Request::new(
+    //         Some("RAWR!! x3 nuzzles! pounces on u uwu u so warm.".to_string()),
+    //         HashMap::new(),
+    //         RequestMethod::GET,
+    //         String::from("https://postman-echo.com/get"),
+    //         HashMap::new(),
+    //     );
 
-        let res = req.send_request().await;
-        assert_eq!(true, res.is_ok());
-        assert_eq!(200, res.as_ref().ok().unwrap().status);
-        assert_eq!(
-            "1337",
-            res.as_ref().ok().unwrap().body["headers"]["random-header"]
-        );
-    }
+    //     let res = req.send_request().await;
+    //     assert_eq!(true, res.is_ok());
+    //     assert_eq!(200, res.as_ref().ok().unwrap().status);
+    //     dbg!(res.as_ref().ok().unwrap());
+    //     assert_eq!("1337", res.as_ref().ok().unwrap().body["args"]["body"]);
+    // }
 }

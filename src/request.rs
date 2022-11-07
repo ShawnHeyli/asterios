@@ -46,7 +46,7 @@ impl Request {
         Request {
             body,
             headers: headers
-                .iter()
+                .into_iter()
                 .map(|(k, v)| (k.to_case(Case::Kebab), v.to_string()))
                 .collect(),
             method,
@@ -107,13 +107,13 @@ mod tests {
 
     #[tokio::test]
     async fn make_get_request() {
-        let req = Request {
-            body: None,
-            url: String::from("https://postman-echo.com/get?name=john"),
-            method: RequestMethod::GET,
-            headers: HashMap::new(),
-            params: HashMap::new(),
-        };
+        let req = Request::new(
+            None,
+            HashMap::new(),
+            RequestMethod::GET,
+            String::from("https://postman-echo.com/get"),
+            HashMap::new(),
+        );
 
         let res = req.send_request().await;
         assert_eq!(true, res.is_ok());
@@ -121,13 +121,13 @@ mod tests {
 
     #[tokio::test]
     async fn make_get_request_with_params() {
-        let req = Request {
-            body: None,
-            url: String::from("https://postman-echo.com/get"),
-            method: RequestMethod::GET,
-            headers: HashMap::new(),
-            params: HashMap::from([("name".to_string(), "john".to_string())]),
-        };
+        let req = Request::new(
+            None,
+            HashMap::new(),
+            RequestMethod::GET,
+            String::from("https://postman-echo.com/get"),
+            HashMap::from([("name".to_string(), "john".to_string())]),
+        );
 
         let res: Result<Response, Error> = req.send_request().await;
         assert_eq!(true, res.is_ok());
@@ -136,18 +136,17 @@ mod tests {
 
     #[tokio::test]
     async fn make_get_request_with_headers() {
-        let req = Request {
-            body: None,
-            url: String::from("https://postman-echo.com/get"),
-            method: RequestMethod::GET,
-            headers: HashMap::from([("randomHeader".to_string(), "1337".to_string())]),
-            params: HashMap::new(),
-        };
+        let req = Request::new(
+            None,
+            HashMap::from([("randomHeader".to_string(), "1337".to_string())]),
+            RequestMethod::GET,
+            String::from("https://postman-echo.com/get"),
+            HashMap::from([("name".to_string(), "john".to_string())]),
+        );
 
         let res = req.send_request().await;
         assert_eq!(true, res.is_ok());
         assert_eq!(200, res.as_ref().ok().unwrap().status);
-        dbg!(res.as_ref().ok().unwrap());
         assert_eq!(
             "1337",
             res.as_ref().ok().unwrap().body["headers"]["random-header"]
